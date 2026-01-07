@@ -317,12 +317,36 @@ class LinkedList:
     def size(self):
         return self.length
     
-    def toArray(self):
-        pass
+    def copy_list(self):
+        
+        list = []
+
+        current_node = self.head
+        
+        while current_node:
+            list.append(current_node.value)
+            current_node = current_node.next
+        
+        return list
 
     def reverse(self):
-        pass
+        
+        head = self.head
+        tail = self.tail
 
+        previous_node = None
+        current_node = self.head
+        next = current_node.next
+
+        while current_node:
+            next = current_node.next
+            current_node.next = previous_node
+
+            previous_node = current_node
+            current_node = next
+
+        self.head = tail
+        self.tail = head
 
     
 # Stack Tests:
@@ -419,3 +443,9 @@ LL.traverse()
 
 # LL.clear()
 # LL.traverse()
+
+# list = LL.copy_list()
+# print(list)
+
+LL.reverse()
+LL.traverse()
