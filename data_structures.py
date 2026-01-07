@@ -107,7 +107,8 @@ class Node:
         self.value = value
         self.next = None
 
-# Singly(?) Linked List
+
+# Singly Linked List
 class LinkedList:
 
     def __init__(self):
@@ -116,7 +117,6 @@ class LinkedList:
         self.length = 0
 
     def __repr__(self):
-        # """Helper method to represent the list as a string for easy printing."""
         temp_node = self.head
         result = ''
         while temp_node is not None:
@@ -127,41 +127,34 @@ class LinkedList:
         return result
 
     def prepend(self, new_node):
-        
-        if self.head == None:
+        if self.head is None:
             self.head = new_node
             self.tail = new_node
-        
         else:
             new_node.next = self.head
             self.head = new_node
-
         self.length += 1
 
     def append(self, new_node):
-
-        if self.head == None:
+        if self.head is None:
             self.head = new_node
             self.tail = new_node
-        
         else:
             self.tail.next = new_node
             self.tail = new_node
-
         self.length += 1
 
     def insert(self, new_node, index):
-        
         if index < 1:
             print("Insert a valid index.\nInsertion aborted.")
             return
 
         elif index == 1:
-            print("Please use the \"prepend\" method to attach a node to the head of the linked list.\nInsertion aborted.")
+            print("Please use the \"prepend\" method.\nInsertion aborted.")
             return
-        
+
         elif index == self.length + 1:
-            print("Please use the \"append\" method to attach a node to the tail of the linked list.\nInsertion aborted.")
+            print("Please use the \"append\" method.\nInsertion aborted.")
             return
 
         elif index > self.length + 1:
@@ -169,160 +162,120 @@ class LinkedList:
             return
 
         temp = self.head
-        for i in range(1, index-1):
+        for _ in range(1, index - 1):
             temp = temp.next
-        temp2 = temp.next
-        
-        temp.next = new_node
-        new_node.next = temp2
 
+        new_node.next = temp.next
+        temp.next = new_node
         self.length += 1
 
     def contains(self, value):
-        
         current_node = self.head
-        
-        while current_node:
-            if current_node.value == value: return True
-            current_node = current_node.next
-        
-        return False
-    
-    def find(self, value):
-        
-        i = 1
-        current_node = self.head
-
         while current_node:
             if current_node.value == value:
-                return f"Found at index #{i}"
+                return True
+            current_node = current_node.next
+        return False
+
+    def find(self, value):
+        i = 1
+        current_node = self.head
+        while current_node:
+            if current_node.value == value:
+                return i
             current_node = current_node.next
             i += 1
-        
         return "Value Not Found"
 
     def remove_first(self):
         if self.isEmpty():
             print("List is Empty!")
             return
-        
-        elif self.head == self.tail:
+
+        if self.head == self.tail:
             self.clear()
             return
 
-
-        temp = self.head.next
-        self.head = temp
+        self.head = self.head.next
         self.length -= 1
 
-        if self.length == 1:
-            self.tail = self.head
-
     def remove_last(self):
-        
         if self.isEmpty():
             print("List is Empty!")
             return
-        
-        elif self.head == self.tail:
+
+        if self.head == self.tail:
             self.clear()
             return
-        
+
         temp = self.head
-        for i in range(self.length-2):
+        for _ in range(self.length - 2):
             temp = temp.next
-        
+
         temp.next = None
         self.tail = temp
         self.length -= 1
 
-        if self.length == 1:
-            self.head = self.tail
-
     def remove(self, index):
-        
-        tail_flag = False
-
         if self.isEmpty():
             print("List is Empty!")
-            return
-        
-        elif self.head == self.tail:
-            self.clear()
             return
 
         if index < 1:
             print("Insert a valid index.\nRemoving aborted.")
             return
 
-        elif index == 1:
-            print("Please use the \"remove_first\" method to remove the head of the linked list.\nRemoving aborted.")
+        if index > self.length:
+            print("Index is bigger than the linked list's length!\nRemoving aborted.")
             return
-        
-        elif index == self.length:
-            tail_flag = True
 
-        elif index > self.length:
-            print("Index is bigger than the linked list's length!\nInsertion aborted.")
+        if self.head == self.tail:
+            self.clear()
             return
-        
-        i = 1
+
+        if index == 1:
+            print("Please use the \"remove_first\" method.\nRemoving aborted.")
+            return
+
         current_node = self.head
-
-        while i < (index - 1):
+        for _ in range(1, index - 1):
             current_node = current_node.next
-            i += 1
-        
-        temp = current_node
-        target_node = current_node.next
-        temp.next = target_node.next
 
-        self.length -= 1
-
-        if tail_flag:
+        if current_node.next == self.tail:
             self.tail = current_node
 
+        current_node.next = current_node.next.next
+        self.length -= 1
 
     def find_del(self, value):
-
         if self.isEmpty():
             print("List is Empty!")
             return
 
-        current_node = self.head
-
-        if current_node.value == value:
+        if self.head.value == value:
             self.remove_first()
             return
 
-        found = False
+        previous_node = self.head
+        current_node = self.head.next
 
         while current_node:
             if current_node.value == value:
-                found = True
-                break
+                previous_node.next = current_node.next
+                if current_node == self.tail:
+                    self.tail = previous_node
+                self.length -= 1
+                return
             previous_node = current_node
             current_node = current_node.next
 
-        if found:
-            previous_node.next = current_node.next
-        
-            if current_node == self.tail:
-                self.tail = previous_node
+        print("Value Not Found")
 
-            self.length -= 1
-        
-        else:
-            print("Value Not Found")
-        
     def traverse(self):
-        
         current_node = self.head
-        
         while current_node:
             print(current_node.value, end=" -> ")
             current_node = current_node.next
-        
         print("None")
 
     def getFirst(self):
@@ -338,26 +291,22 @@ class LinkedList:
         return self.tail.value
 
     def get(self, index):
-        
         if self.isEmpty():
             print("List is Empty!")
             return
-        
+
         if index < 1:
             print("Insert a valid index.")
             return
-        
+
         elif index > self.length:
             print("Index is bigger than the linked list's length!")
             return
-        
-        i = 1
-        current_node = self.head
 
-        while i < (index):
+        current_node = self.head
+        for _ in range(1, index):
             current_node = current_node.next
-            i += 1
-        
+
         return current_node.value
 
     def clear(self):
@@ -366,46 +315,34 @@ class LinkedList:
         self.length = 0
 
     def isEmpty(self):
-        if self.head == None: return True
-        return False
+        return self.head is None
 
     def size(self):
         return self.length
-    
-    def copy_list(self):
-        
-        copied_list = []
 
+    def to_list(self):
+        copied_list = []
         current_node = self.head
-        
         while current_node:
             copied_list.append(current_node.value)
             current_node = current_node.next
-        
         return copied_list
 
     def reverse(self):
-        
         if self.isEmpty() or self.head == self.tail:
             return
 
-        head = self.head
-        tail = self.tail
+        prev = None
+        curr = self.head
+        self.tail = self.head
 
-        previous_node = None
-        current_node = self.head
-        next = current_node.next
+        while curr:
+            nxt = curr.next
+            curr.next = prev
+            prev = curr
+            curr = nxt
 
-        while current_node:
-            next = current_node.next
-            current_node.next = previous_node
-
-            previous_node = current_node
-            current_node = next
-
-        self.head = tail
-        self.tail = head
-
+        self.head = prev
     
 # Stack Tests:
 
@@ -502,7 +439,7 @@ class LinkedList:
 # LL.clear()
 # LL.traverse()
 
-# list = LL.copy_list()
+# list = LL.to_list()
 # print(list)
 
 # LL.reverse()
