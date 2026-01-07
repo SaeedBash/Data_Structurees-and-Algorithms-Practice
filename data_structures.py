@@ -1,106 +1,105 @@
-# To Implement some Data Structures from scratch; To deepen understanding and practice programming
-
 from collections import deque
 
+# =====================
+# Stack
+# =====================
 class Stack:
 
     def __init__(self):
         self.stack = []
 
     def __repr__(self):
-
-        if self.isEmpty() == True:
+        if self.isEmpty():
             return "Empty Stack"
 
         string = "####TOP####\n"
         for i in range(self.size()):
-            string = string + str(self.stack[-i-1]) + "\n" 
-        string = string + "###Bottom###"
-
+            string += str(self.stack[-i-1]) + "\n"
+        string += "###Bottom###"
         return string
 
     def push(self, item):
         self.stack.append(item)
 
     def push_multi(self, iterable):
-
         for item in iterable:
             self.push(item)
-            
-        
+
     def peek(self):
         return self.stack[-1]
-    
+
     def pop(self):
-        temp = self.stack[0]
-        self.stack = self.stack[1:]
-        return temp
-    
+        if self.isEmpty():
+            print("Stack is Empty!")
+            return
+        return self.stack.pop()   # FIXED (LIFO)
+
     def pop_all(self):
-        temp = self.stack
+        temp = self.stack.copy()
         self.stack = []
         return temp
 
     def isEmpty(self):
-        if self.stack == []: return True
-        return False
-    
+        return self.stack == []
+
     def size(self):
         return len(self.stack)
 
+
+# =====================
+# Queue
+# =====================
 class Queue:
 
     def __init__(self):
         self.queue = deque()
 
     def __repr__(self):
-
-        if self.isEmpty() == True:
+        if self.isEmpty():
             return "Empty queue"
 
         string = "[End of queue]     "
         for i in range(self.size()):
-            string = string + str(self.queue[i]) + "     " 
-        string = string + "[Start of queue]"
-
+            string += str(self.queue[i]) + "     "
+        string += "[Start of queue]"
         return string
 
     def push(self, item):
         self.queue.appendleft(item)
 
     def push_multi(self, iterable):
-
         for item in iterable:
             self.push(item)
-            
-        
+
     def peek(self, i=1):
-        
-        if self.isEmpty() == True:
+        if self.isEmpty():
             return "queue is empty"
-        
         try:
             return self.queue[-i]
         except IndexError:
             return f"Last position in queue is #{self.size()}"
-            
-    
+
     def pop(self):
+        if self.isEmpty():
+            print("Queue is Empty!")
+            return
         return self.queue.pop()
-    
+
     def pop_all(self):
-        temp = self.queue
-        self.queue = []
+        temp = list(self.queue)
+        self.queue = deque()   # FIXED (type preserved)
         return temp
 
     def isEmpty(self):
-        if self.size() == 0: return True
-        return False
-    
+        return self.size() == 0
+
     def size(self):
         return len(self.queue)
 
-# for Singly Linked Lists
+
+# =====================
+# Singly Linked List
+# =====================
 class Node:
 
     def __init__(self, value):
@@ -108,7 +107,6 @@ class Node:
         self.next = None
 
 
-# Singly Linked List
 class LinkedList:
 
     def __init__(self):
@@ -119,48 +117,49 @@ class LinkedList:
     def __repr__(self):
         temp_node = self.head
         result = ''
-        while temp_node is not None:
+        while temp_node:
             result += str(temp_node.value)
-            if temp_node.next is not None:
+            if temp_node.next:
                 result += ' -> '
             temp_node = temp_node.next
         return result
 
-    def prepend(self, new_node):
+    def prepend(self, data):
+        new_node = Node(data)
         if self.head is None:
-            self.head = new_node
-            self.tail = new_node
+            self.head = self.tail = new_node
         else:
             new_node.next = self.head
             self.head = new_node
         self.length += 1
 
-    def append(self, new_node):
+    def append(self, data):
+        new_node = Node(data)
         if self.head is None:
-            self.head = new_node
-            self.tail = new_node
+            self.head = self.tail = new_node
         else:
             self.tail.next = new_node
             self.tail = new_node
         self.length += 1
 
-    def insert(self, new_node, index):
+    def insert(self, data, index):
         if index < 1:
             print("Insert a valid index.\nInsertion aborted.")
             return
 
-        elif index == 1:
-            print("Please use the \"prepend\" method.\nInsertion aborted.")
+        if index == 1:
+            self.prepend(data)        # FIXED
             return
 
-        elif index == self.length + 1:
-            print("Please use the \"append\" method.\nInsertion aborted.")
+        if index == self.length + 1:
+            self.append(data)         # FIXED
             return
 
-        elif index > self.length + 1:
+        if index > self.length + 1:
             print("Index is bigger than the linked list's length!\nInsertion aborted.")
             return
 
+        new_node = Node(data)
         temp = self.head
         for _ in range(1, index - 1):
             temp = temp.next
@@ -170,22 +169,22 @@ class LinkedList:
         self.length += 1
 
     def contains(self, value):
-        current_node = self.head
-        while current_node:
-            if current_node.value == value:
+        current = self.head
+        while current:
+            if current.value == value:
                 return True
-            current_node = current_node.next
+            current = current.next
         return False
 
     def find(self, value):
-        i = 1
-        current_node = self.head
-        while current_node:
-            if current_node.value == value:
-                return i
-            current_node = current_node.next
-            i += 1
-        return "Value Not Found"
+        index = 1
+        current = self.head
+        while current:
+            if current.value == value:
+                return index
+            current = current.next
+            index += 1
+        return -1
 
     def remove_first(self):
         if self.isEmpty():
@@ -221,6 +220,10 @@ class LinkedList:
             print("List is Empty!")
             return
 
+        if self.head == self.tail:
+            self.clear()
+            return
+
         if index < 1:
             print("Insert a valid index.\nRemoving aborted.")
             return
@@ -229,22 +232,18 @@ class LinkedList:
             print("Index is bigger than the linked list's length!\nRemoving aborted.")
             return
 
-        if self.head == self.tail:
-            self.clear()
-            return
-
         if index == 1:
-            print("Please use the \"remove_first\" method.\nRemoving aborted.")
+            self.remove_first()
             return
 
-        current_node = self.head
+        current = self.head
         for _ in range(1, index - 1):
-            current_node = current_node.next
+            current = current.next
 
-        if current_node.next == self.tail:
-            self.tail = current_node
+        if current.next == self.tail:
+            self.tail = current
 
-        current_node.next = current_node.next.next
+        current.next = current.next.next
         self.length -= 1
 
     def find_del(self, value):
@@ -256,26 +255,26 @@ class LinkedList:
             self.remove_first()
             return
 
-        previous_node = self.head
-        current_node = self.head.next
+        prev = self.head
+        curr = self.head.next
 
-        while current_node:
-            if current_node.value == value:
-                previous_node.next = current_node.next
-                if current_node == self.tail:
-                    self.tail = previous_node
+        while curr:
+            if curr.value == value:
+                prev.next = curr.next
+                if curr == self.tail:
+                    self.tail = prev
                 self.length -= 1
                 return
-            previous_node = current_node
-            current_node = current_node.next
+            prev = curr
+            curr = curr.next
 
         print("Value Not Found")
 
     def traverse(self):
-        current_node = self.head
-        while current_node:
-            print(current_node.value, end=" -> ")
-            current_node = current_node.next
+        current = self.head
+        while current:
+            print(current.value, end=" -> ")
+            current = current.next
         print("None")
 
     def getFirst(self):
@@ -295,23 +294,17 @@ class LinkedList:
             print("List is Empty!")
             return
 
-        if index < 1:
-            print("Insert a valid index.")
+        if index < 1 or index > self.length:
+            print("Invalid index!")
             return
 
-        elif index > self.length:
-            print("Index is bigger than the linked list's length!")
-            return
-
-        current_node = self.head
+        current = self.head
         for _ in range(1, index):
-            current_node = current_node.next
-
-        return current_node.value
+            current = current.next
+        return current.value
 
     def clear(self):
-        self.head = None
-        self.tail = None
+        self.head = self.tail = None
         self.length = 0
 
     def isEmpty(self):
@@ -321,12 +314,12 @@ class LinkedList:
         return self.length
 
     def to_list(self):
-        copied_list = []
-        current_node = self.head
-        while current_node:
-            copied_list.append(current_node.value)
-            current_node = current_node.next
-        return copied_list
+        result = []
+        current = self.head
+        while current:
+            result.append(current.value)
+            current = current.next
+        return result
 
     def reverse(self):
         if self.isEmpty() or self.head == self.tail:
@@ -343,104 +336,3 @@ class LinkedList:
             curr = nxt
 
         self.head = prev
-    
-# Stack Tests:
-
-    # new = Stack()
-
-    # print(new.isEmpty())
-    # print(new)
-
-    # new.push("Potato")
-    # print(new.isEmpty())
-    # print(new.size())
-    # print(new)
-
-    # print(new.peek())
-    # print(new.pop())
-    # print(new.size())
-    
-    # list = ["Potato", "Carrot", "Tomato"]
-    # new.push_multi(list)
-    # print(new.stack)
-    # print(new)
-    
-    # new.pop_all()
-    # print(new)
-
-# Queue Tests:
-
-    # new = Queue()
-
-    # print(new.isEmpty())
-    # print(new)
-
-    # new.push("Potato")
-    # print(new.isEmpty())
-    # print(new.size())
-    # print(new)
-
-    # print(new.peek())
-    # print(new.peek(1))
-    # print(new.peek(2))
-    # print(new.pop())
-    # print(new.size())
-
-    # list = ["Potato", "Carrot", "Tomato"]
-    # new.push_multi(list)
-    # print(new.queue)
-    # print(new)
-    # print(new.pop())
-    # new.push("Banana")
-    # print(new)
-    # print(new.isEmpty())
-    # new.pop_all()
-    # print(new.isEmpty())
-    # print(new.size())
-    # print(new)
-
-# LinkedList Tests:
-
-# LL = LinkedList()
-# print(LL.isEmpty())
-
-# node_list = [Node("Potato"), Node("Tomato"), Node("Banana"), Node("Lemon")]
-# for node in node_list:
-#     LL.append(node)
-# LL.prepend(Node("Nuts"))
-
-# print(f"First: {LL.getFirst()}\nLast: {LL.getLast()}")
-
-# LL.insert(Node("TEST"), 3)
-# LL.traverse()
-
-# LL.remove_first()
-# LL.traverse()
-# LL.remove_last()
-# LL.traverse()
-# print(f"Length: {LL.size()}")
-# LL.remove(2)
-# print(f"Length: {LL.size()}")
-# LL.traverse()
-
-# print(f"Length: {LL.size()}")
-
-# print(f"{LL.contains("TEST")} {LL.contains("IDK")}")
-
-# print(f"{LL.find('nuts')}   {LL.find('Nuts')}")
-
-# LL.find_del("TEST")
-# LL.traverse()
-
-# print(LL.isEmpty())
-
-# print(LL.get(6))
-
-# LL.clear()
-# LL.traverse()
-
-# list = LL.to_list()
-# print(list)
-
-# LL.reverse()
-# LL.traverse()
