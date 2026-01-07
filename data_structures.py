@@ -160,10 +160,11 @@ class LinkedList:
             print("Please use the \"prepend\" method to attach a node to the head of the linked list.\nInsertion aborted.")
             return
         
-        elif index == self.length:
+        elif index == self.length + 1:
             print("Please use the \"append\" method to attach a node to the tail of the linked list.\nInsertion aborted.")
-        
-        elif index > self.length:
+            return
+
+        elif index > self.length + 1:
             print("Index is bigger than the linked list's length!\nInsertion aborted.")
             return
 
@@ -201,11 +202,32 @@ class LinkedList:
         return "Value Not Found"
 
     def remove_first(self):
+        if self.isEmpty():
+            print("List is Empty!")
+            return
+        
+        elif self.head == self.tail:
+            self.clear()
+            return
+
+
         temp = self.head.next
         self.head = temp
         self.length -= 1
 
+        if self.length == 1:
+            self.tail = self.head
+
     def remove_last(self):
+        
+        if self.isEmpty():
+            print("List is Empty!")
+            return
+        
+        elif self.head == self.tail:
+            self.clear()
+            return
+        
         temp = self.head
         for i in range(self.length-2):
             temp = temp.next
@@ -214,8 +236,21 @@ class LinkedList:
         self.tail = temp
         self.length -= 1
 
+        if self.length == 1:
+            self.head = self.tail
+
     def remove(self, index):
         
+        tail_flag = False
+
+        if self.isEmpty():
+            print("List is Empty!")
+            return
+        
+        elif self.head == self.tail:
+            self.clear()
+            return
+
         if index < 1:
             print("Insert a valid index.\nRemoving aborted.")
             return
@@ -224,9 +259,9 @@ class LinkedList:
             print("Please use the \"remove_first\" method to remove the head of the linked list.\nRemoving aborted.")
             return
         
-        # elif index == self.length:
-            # print("Please use the \"remove_last\" method to remove the tail of the linked list.\nRemoving aborted.")
-        
+        elif index == self.length:
+            tail_flag = True
+
         elif index > self.length:
             print("Index is bigger than the linked list's length!\nInsertion aborted.")
             return
@@ -234,7 +269,7 @@ class LinkedList:
         i = 1
         current_node = self.head
 
-        while i < (index-1):
+        while i < (index - 1):
             current_node = current_node.next
             i += 1
         
@@ -244,7 +279,15 @@ class LinkedList:
 
         self.length -= 1
 
+        if tail_flag:
+            self.tail = current_node
+
+
     def find_del(self, value):
+
+        if self.isEmpty():
+            print("List is Empty!")
+            return
 
         current_node = self.head
 
@@ -263,13 +306,15 @@ class LinkedList:
 
         if found:
             previous_node.next = current_node.next
+        
+            if current_node == self.tail:
+                self.tail = previous_node
+
             self.length -= 1
         
         else:
             print("Value Not Found")
         
-        
-
     def traverse(self):
         
         current_node = self.head
@@ -281,12 +326,22 @@ class LinkedList:
         print("None")
 
     def getFirst(self):
+        if self.isEmpty():
+            print("List is Empty!")
+            return
         return self.head.value
 
     def getLast(self):
+        if self.isEmpty():
+            print("List is Empty!")
+            return
         return self.tail.value
 
     def get(self, index):
+        
+        if self.isEmpty():
+            print("List is Empty!")
+            return
         
         if index < 1:
             print("Insert a valid index.")
@@ -319,18 +374,21 @@ class LinkedList:
     
     def copy_list(self):
         
-        list = []
+        copied_list = []
 
         current_node = self.head
         
         while current_node:
-            list.append(current_node.value)
+            copied_list.append(current_node.value)
             current_node = current_node.next
         
-        return list
+        return copied_list
 
     def reverse(self):
         
+        if self.isEmpty() or self.head == self.tail:
+            return
+
         head = self.head
         tail = self.tail
 
@@ -406,17 +464,17 @@ class LinkedList:
 
 # LinkedList Tests:
 
-LL = LinkedList()
-#print(LL.isEmpty())
+# LL = LinkedList()
+# print(LL.isEmpty())
 
-node_list = [Node("Potato"), Node("Tomato"), Node("Banana"), Node("Lemon")]
-for node in node_list:
-    LL.append(node)
-LL.prepend(Node("Nuts"))
+# node_list = [Node("Potato"), Node("Tomato"), Node("Banana"), Node("Lemon")]
+# for node in node_list:
+#     LL.append(node)
+# LL.prepend(Node("Nuts"))
 
 # print(f"First: {LL.getFirst()}\nLast: {LL.getLast()}")
 
-LL.insert(Node("TEST"), 3)
+# LL.insert(Node("TEST"), 3)
 # LL.traverse()
 
 # LL.remove_first()
@@ -434,8 +492,8 @@ LL.insert(Node("TEST"), 3)
 
 # print(f"{LL.find('nuts')}   {LL.find('Nuts')}")
 
-LL.find_del("TEST")
-LL.traverse()
+# LL.find_del("TEST")
+# LL.traverse()
 
 # print(LL.isEmpty())
 
@@ -447,5 +505,5 @@ LL.traverse()
 # list = LL.copy_list()
 # print(list)
 
-LL.reverse()
-LL.traverse()
+# LL.reverse()
+# LL.traverse()
