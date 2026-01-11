@@ -34,12 +34,16 @@ class TreeNode:
             for child in self.children:
                 child.print_tree()
 
-    def traverse_depth_first(self):
+    def traverse_depth_first_pre(self): #PRE-ORDER
         yield self
         for child in self.children:
-            yield from child.traverse_depth_first()
+            yield from child.traverse_depth_first_pre()
 
-    
+    def traverse_depth_first_post(self): #POST-ORDER
+        for child in self.children:
+            yield from child.traverse_depth_first_post()
+        yield self
+
 clear_screen()
 
 #tests:
@@ -58,3 +62,12 @@ root.add_child(laptop)
 root.add_child(phone)
 
 root.print_tree()
+
+print("\npre-order depth first traversal:")
+for node in root.traverse_depth_first_pre():
+    print(node.data)
+
+
+print("\npost-order depth first traversal:")
+for node in root.traverse_depth_first_post():
+    print(node.data)
