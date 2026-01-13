@@ -11,8 +11,11 @@ def clear_screen():
 #decrease key
 
 class MinHeap:
-    def __init__(self):
-        self.heap = []
+    def __init__(self, input_list=None):
+        if input_list:
+            self._build_heap(input_list)
+        else:
+            self.heap = []
 
     def get_parent_index(self, index):
         return (index - 1) // 2
@@ -122,16 +125,27 @@ class MinHeap:
         self.heap[index] = new_value
         self._heapify_down(index)
 
+    def _build_heap(self, input_list):
+        self.heap = input_list[:]
+        n = len(self.heap)
+    
+        for i in range(n // 2 - 1, -1, -1):
+            self._heapify_down(i)
+
+    def add_list(self, new_elements):
+        self.heap.extend(new_elements)
+
+        n = len(self.heap)
+        for i in range(n // 2 - 1, -1, -1):
+            self._heapify_down(i)
+
 
 clear_screen()
 
 #tests
 
-h = MinHeap()
-
 data = [3, 4, 1, 7, 20, -1, 12, 14, 15, 16, 17, 18, 19, 200, 300, 400, 500, 600, 1000, 2000, 3000, 4000, 5000, 7000]
-for key in data:
-    h.insert(key)
+h = MinHeap(data)
 
 print(h.heap)
 
