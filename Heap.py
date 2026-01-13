@@ -8,8 +8,6 @@ def clear_screen():
     else:
         _ = os.system('clear')
 
-#decrease key
-
 class MinHeap:
     def __init__(self, input_list=None):
         if input_list:
@@ -156,5 +154,3 @@ h.delete(1)
 print(h.extract(1))
 print()
 h.display(0)
-
-#BUILD HEAP FROM LIST METHOD
