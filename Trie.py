@@ -88,16 +88,37 @@ class CTrie:
         return False
     
     def delete(self, key):
-    
-    def _delete(node, key, depth):
+        # Start deletion from the root
+        if not self.search(key):
+            raise KeyError(f"Key '{key}' not found")
+        self._delete(self.root, key, 0)
+
+    def _delete(self, node, key, depth):
         if not node:
             return False
-
         
+        # Base Case: Reached the end of the key
+        if depth == len(key):
+            # If the key was actually there, unmark it
+            if node.end_of_word:
+                node.end_of_word = False
+            
+            # Return True if this node can now be deleted by its parent
+            return len(node.children) == 0
 
+        char = key[depth]
+        if char in node.children:
+            # Recursively move to the next character
+            should_delete_child = self._delete(node.children[char], key, depth + 1)
+
+            if should_delete_child:
+                # Physically remove the child from the dictionary
+                del node.children[char]
+                
+                # We can delete this node too if it's not a key-end and has no other children
+                return not node.end_of_word and len(node.children) == 0
         
-
-
+        return False
             
 clear_screen()
 
@@ -116,7 +137,8 @@ print(T.is_prefix("c"))
 print(T.is_prefix("cow"))
 print(T.is_prefix("cowe"))
 print(T.is_prefix("cower"))
-T.delete("cower")
+T.delete("cow")
+print(T.search("cow"))
 print(T.search("cower"))
 
 # Tests for simple Trie
@@ -131,38 +153,3 @@ print(T.search("cower"))
 # print(T.search("cowe"))
 # print(T.search("cower"))
 # print(T.is_prefix("cower"))
-
-#DELETE METHOD COPIED TO REFERENCE
-
-# def delete(self, word):
-#     def _delete(node, word, depth):
-#         if not node:
-#             return False
-
-#         # Base Case: Reached the end of the word
-#         if depth == len(word):
-#             # If the word was actually there, unmark it
-#             if node.is_end_of_word:
-#                 node.is_end_of_word = False
-            
-#             # Return True if this node can now be deleted by its parent
-#             return len(node.children) == 0
-
-#         char = word[depth]
-#         if char in node.children:
-#             # Recursively move to the next character
-#             should_delete_child = _delete(node.children[char], word, depth + 1)
-
-#             if should_delete_child:
-#                 # Physically remove the child from the dictionary
-#                 del node.children[char]
-                
-#                 # We can delete this node too if it's not a word-end and has no other children
-#                 return not node.is_end_of_word and len(node.children) == 0
-        
-#         return False
-
-#     # Start deletion from the root
-#     if not self.search(word):
-#         raise KeyError(f"Key '{word}' not found")
-#     _delete(self.root, word, 0)
